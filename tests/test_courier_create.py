@@ -16,10 +16,10 @@ class TestCourierCreate:
 
     @allure.title("Нельзя создать двух одинаковых курьеров (409, есть message)")
     def test_cannot_create_same_twice(self, courier_api, created_couriers):
-        courier_payload = gen_courier(login="same_login")
+        courier_payload = gen_courier()
         first_response = courier_api.create(courier_payload)
-        if first_response.status_code == 201:
-            created_couriers.append(courier_payload)
+        assert first_response.status_code == 201
+        created_couriers.append(courier_payload)
         response = courier_api.create(courier_payload)
         assert response.status_code == 409
         response_body = response.json()
