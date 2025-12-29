@@ -31,3 +31,16 @@ def created_order(orders_api: OrdersApi):
     yield tracks
     for t in tracks:
         orders_api.cancel(t)
+
+@pytest.fixture
+def created_couriers(courier_api: CourierApi):
+    created: list[dict] = []
+    yield created
+    for courier_payload in created:
+        login_response = courier_api.login({"login": courier_payload["login"], "password": courier_payload["password"]})
+        try:
+            courier_id = login_response.json().get("id")
+        except Exception:
+            courier_id = None
+        if courier_id:
+            courier_api.delete(courier_id)
